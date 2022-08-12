@@ -1,43 +1,44 @@
-pipeline
+pipeline 
 {
     agent any
     stages
-    {
-        stage('continuousDownloads')
         {
-            steps
+            stage('continuous download')
             {
-                git 'https://github.com/phaneesunny/declarativemaven.git'
+                steps
+                {
+                 git 'https://github.com/intelliqittrainings/maven.git'
+                }
             }
-        }
-        stage('continuousBuild')
-        {
-            steps
+            
+            stage('continuous build')
             {
-               sh 'mvn package' 
+                steps
+                {
+                 sh 'mvn package'
+                }
             }
-        }
-        stage('continuousDeployment')
-        {
-            steps
+            stage('continuous deployment')
             {
-               deploy adapters: [tomcat9(credentialsId: 'aa911521-13ff-49b0-8d1a-25520692cc5d', path: '', url: 'http://172.31.10.181:8080')], contextPath: 'qaserver', war: '**/*.war' 
+                steps
+                {
+                 deploy adapters: [tomcat9(credentialsId: '2e6bf8d6-9b91-4075-b423-e966f305338f', path: '', url: 'http://172.31.10.181:8080')], contextPath: 'test app', war: '**/*.war'
+                }
             }
-        }
-        stage('continuousTesting')
-        {
-            steps
+            stage('continuous testing')
             {
-              git 'https://github.com/intelliqittrainings/FunctionalTesting.git'
-              sh 'java  -jar /home/ubuntu/.jenkins/workspace/declerativepipeline1/testing.jar'
+                steps
+                {
+                 git 'https://github.com/intelliqittrainings/FunctionalTesting.git'
+                 sh 'java -jar /root/.jenkins/workspace/declerativepipeline1/testing.jar'
+                }
             }
-        }
-        stage('continuousDelivery')
-        {
-            steps
+            stage('continuous delivery')
             {
-              deploy adapters: [tomcat9(credentialsId: 'aa911521-13ff-49b0-8d1a-25520692cc5d', path: '', url: 'http://172.31.9.38:8080')], contextPath: 'pdserver', war: '**/*.war'  
+                steps
+                {
+                 deploy adapters: [tomcat9(credentialsId: '2e6bf8d6-9b91-4075-b423-e966f305338f', path: '', url: 'http://172.31.9.38:8080')], contextPath: 'prod app', war: '**/*.war'
+                }
             }
-        }
-    }
-}
+       }
+      }
